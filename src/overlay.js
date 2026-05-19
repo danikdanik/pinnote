@@ -14,11 +14,11 @@ const STATUS_COLORS = {
 };
 
 const TAG_LABELS = [
-  ['bug',       `bug (${MOD}1)`],
-  ['change',    `change (${MOD}2)`],
-  ['remove',    `remove (${MOD}3)`],
-  ['unclear',   `unclear (${MOD}4)`],
-  ['redundant', `redundant (${MOD}5)`],
+  ['bug',       'bug (Alt+1)'],
+  ['change',    'change (Alt+2)'],
+  ['remove',    'remove (Alt+3)'],
+  ['unclear',   'unclear (Alt+4)'],
+  ['redundant', 'redundant (Alt+5)'],
 ];
 
 // ── Module state ───────────────────────────────────────────────
@@ -159,7 +159,7 @@ export function openNewNotePopover(anchor, position, targetEl) {
   pop.appendChild(ta);
 
   const hint = el('div', { class: 'pn-pop-hint' });
-  hint.textContent = `${MOD}1–5 to change tag  ·  Enter to save  ·  Shift+Enter newline  ·  Esc to cancel`;
+  hint.textContent = `Alt+1–5 to change tag  ·  Enter to save  ·  Shift+Enter newline  ·  Esc to cancel`;
   pop.appendChild(hint);
 
   const actions = el('div', { class: 'pn-pop-actions' });
@@ -185,13 +185,15 @@ export function openNewNotePopover(anchor, position, targetEl) {
   ta.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') { e.stopPropagation(); closePopover(); return; }
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); return; }
-    const modPressed = isMac ? e.metaKey : e.ctrlKey;
-    if (modPressed) {
-      const tagIdx = parseInt(e.key, 10) - 1;
-      if (tagIdx >= 0 && tagIdx < TAGS.length) {
-        e.preventDefault();
-        currentTag = TAGS[tagIdx];
-        tagSel.value = currentTag;
+    if (e.altKey) {
+      const digitMatch = e.code.match(/^Digit(\d)$/);
+      if (digitMatch) {
+        const tagIdx = parseInt(digitMatch[1], 10) - 1;
+        if (tagIdx >= 0 && tagIdx < TAGS.length) {
+          e.preventDefault();
+          currentTag = TAGS[tagIdx];
+          tagSel.value = currentTag;
+        }
       }
     }
   });
@@ -302,7 +304,7 @@ function openEditPopover(origNote) {
   pop.appendChild(ta);
 
   const hint = el('div', { class: 'pn-pop-hint' });
-  hint.textContent = `${MOD}1–5 to change tag  ·  Enter to save  ·  Shift+Enter newline  ·  Esc to cancel`;
+  hint.textContent = `Alt+1–5 to change tag  ·  Enter to save  ·  Shift+Enter newline  ·  Esc to cancel`;
   pop.appendChild(hint);
 
   const actions = el('div', { class: 'pn-pop-actions' });
