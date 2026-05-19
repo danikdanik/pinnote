@@ -3,11 +3,10 @@ describes a UX issue or change request anchored to a DOM element on a host
 web page.
 
 Tag semantics:
-  bug         — something is broken or incorrect; fix it.
-  change      — modify the element's behavior or appearance per the note.
-  remove      — delete the element entirely.
-  unclear     — open question; treat as a discussion item.
-  redundant   — element duplicates something elsewhere; investigate before acting.
+  change  — modify the element's behavior or appearance per the note.
+  remove  — delete the element entirely.
+  add     — something is missing; create or insert per the note.
+  unclear — open question; treat as a discussion item.
 
 Status semantics (you write back to this file):
   open                  — initial state; act on these.
@@ -30,7 +29,7 @@ export function generateMarkdown(notes, metaPrompt) {
     byRoute[note.route].push(note);
   }
 
-  const byTag = { bug: 0, change: 0, remove: 0, unclear: 0, redundant: 0 };
+  const byTag = { change: 0, remove: 0, add: 0, unclear: 0 };
   const byStatus = { open: 0, applied: 0, skipped: 0, 'needs-clarification': 0 };
   for (const note of notes) {
     if (byTag[note.tag] !== undefined) byTag[note.tag]++;
@@ -47,7 +46,7 @@ export function generateMarkdown(notes, metaPrompt) {
   md += `pinnote_session: ${sessionId}\n`;
   md += `created: ${now}\n`;
   md += `total_notes: ${notes.length}\n`;
-  md += `by_tag: { bug: ${byTag.bug}, change: ${byTag.change}, remove: ${byTag.remove}, unclear: ${byTag.unclear}, redundant: ${byTag.redundant} }\n`;
+  md += `by_tag: { change: ${byTag.change}, remove: ${byTag.remove}, add: ${byTag.add}, unclear: ${byTag.unclear} }\n`;
   md += `by_status: { open: ${byStatus.open}, applied: ${byStatus.applied}, skipped: ${byStatus.skipped}, needs-clarification: ${byStatus['needs-clarification']} }\n\n`;
   md += `meta_prompt: |\n${mpIndented}\n`;
   md += `---\n\n`;

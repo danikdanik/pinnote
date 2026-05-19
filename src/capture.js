@@ -1,6 +1,6 @@
 export const PINNOTE_ATTR = 'data-pinnote-anno';
 
-const TAGS = ['bug', 'change', 'remove', 'unclear', 'redundant'];
+const TAGS = ['change', 'remove', 'add', 'unclear'];
 const isMac = navigator.platform.startsWith('Mac');
 
 let _onNewNote = null;
