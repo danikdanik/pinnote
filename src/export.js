@@ -91,7 +91,8 @@ export function download(notes, metaPrompt) {
   const a = document.createElement('a');
   a.setAttribute('data-pinnote-anno', '1');
   a.href = url;
-  a.download = 'notes.md';
+  const ts = new Date().toISOString().slice(0, 19).replace('T', '-').replace(/:/g, '-');
+  a.download = `pinnotes-${ts}.md`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
