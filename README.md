@@ -6,16 +6,28 @@ PinNote is structured as a two-way comment thread between you and the agent. You
 
 ## Status
 
-Pre-alpha. Spec complete, scaffold in place, implementation in progress.
+v0.1.0 — light mode (localStorage) implemented.
 
 ## Quick start
 
-> Not implemented yet. Once `npm run build` produces `dist/pinnote.js`:
->
-> 1. Open the page you want to review in Chrome/Edge/Brave.
-> 2. Open DevTools console and paste the contents of `dist/pinnote.js`.
-> 3. Shift+Click anywhere on the page to drop a note.
-> 4. Use the floating control (bottom-right) to export `notes.md`.
+**Playground:** open `examples/playground.html` in your browser. PinNote loads automatically.
+
+**Any page:**
+
+1. Open the page you want to review in Chrome/Edge/Brave.
+2. Open DevTools → Sources → Snippets, create a new snippet, paste the contents of `dist/pinnote.js`, and save. Run it with Ctrl+Enter (or right-click → Run). Do this once per Chrome profile — it's always available after that.
+3. Shift+Click any element to drop a note.
+4. Use the floating control (bottom-right) to export `notes.md`.
+
+**Keyboard shortcuts in the note popover:**
+
+| Shortcut | Action |
+|---|---|
+| Shift+Click | Drop a new note |
+| ⌥1–5 (Mac) / Alt+1–5 (Win/Linux) | Change tag |
+| Enter | Save note |
+| Shift+Enter | Newline in note text |
+| Esc | Cancel / close popover |
 
 A bookmarklet alternative will be provided in `bookmarklet.html`.
 
