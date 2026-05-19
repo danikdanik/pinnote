@@ -167,12 +167,16 @@
 
 <script src="../dist/pinnote.js"></script>
 <script>
-  // Simple SPA router for playground
+  // Hash-based SPA router — works on both file:// and http://
   const links = document.querySelectorAll('nav a[data-route]');
   const pages = document.querySelectorAll('.page[data-page]');
 
   function navigate(route) {
-    history.pushState({}, '', route);
+    location.hash = '#' + route;
+  }
+
+  function applyRoute() {
+    const route = location.hash.startsWith('#/') ? location.hash.slice(1) : '/dashboard';
     links.forEach(a => a.classList.toggle('active', a.dataset.route === route));
     pages.forEach(p => p.classList.toggle('active', p.dataset.page === route));
   }
@@ -184,11 +188,8 @@
     });
   });
 
-  window.addEventListener('popstate', () => {
-    const route = location.pathname;
-    links.forEach(a => a.classList.toggle('active', a.dataset.route === route));
-    pages.forEach(p => p.classList.toggle('active', p.dataset.page === route));
-  });
+  window.addEventListener('hashchange', applyRoute);
+  applyRoute();
 </script>
 </body>
 </html>

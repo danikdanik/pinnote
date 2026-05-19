@@ -9,6 +9,8 @@ let booted = false;
 let routeChangeHandler = null;
 
 function currentRoute() {
+  const hash = window.location.hash;
+  if (hash.startsWith('#/')) return hash.slice(1);
   return window.location.pathname + window.location.search;
 }
 
@@ -115,6 +117,7 @@ export function start() {
   };
   window.addEventListener('pinnote:routechange', routeChangeHandler);
   window.addEventListener('popstate', routeChangeHandler);
+  window.addEventListener('hashchange', routeChangeHandler);
 }
 
 export function stop() {
@@ -125,6 +128,7 @@ export function stop() {
   if (routeChangeHandler) {
     window.removeEventListener('pinnote:routechange', routeChangeHandler);
     window.removeEventListener('popstate', routeChangeHandler);
+    window.removeEventListener('hashchange', routeChangeHandler);
     routeChangeHandler = null;
   }
 }
