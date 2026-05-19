@@ -12,6 +12,9 @@ npm install && npm run build
 
 This produces `dist/pinnote.js` — a single self-contained script you inject into any page.
 
+## Example
+<img width="1845" height="1118" alt="image" src="https://github.com/user-attachments/assets/1b65cd57-5796-4f98-8de4-7a0f56cbbb14" />
+
 ## Quickstart
 
 Open `examples/playground.html` in your browser. PinNote loads automatically. Shift+Click any element to try it.
