@@ -176,7 +176,8 @@
   }
 
   function applyRoute() {
-    const route = location.hash.startsWith('#/') ? location.hash.slice(1) : '/dashboard';
+    if (!location.hash.startsWith('#/')) location.hash = '#/dashboard';
+    const route = location.hash.slice(1);
     links.forEach(a => a.classList.toggle('active', a.dataset.route === route));
     pages.forEach(p => p.classList.toggle('active', p.dataset.page === route));
   }
