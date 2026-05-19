@@ -1,0 +1,23 @@
+{
+  "name": "pinnote",
+  "version": "0.1.0",
+  "description": "In-page web annotation tool for UX reviews. Notes export to agent-readable markdown for AI coding agents to act on.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --watch",
+    "clean": "rm -rf dist/*"
+  },
+  "license": "MIT",
+  "keywords": [
+    "annotation",
+    "ux-review",
+    "bookmarklet",
+    "feedback",
+    "ai-agent",
+    "markdown"
+  ],
+  "devDependencies": {
+    "esbuild": "^0.20.0"
+  }
+}

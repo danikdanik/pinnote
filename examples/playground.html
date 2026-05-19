@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PinNote Playground</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; background: #f7fafc; color: #2d3748; }
+    nav { background: #2d3748; color: #fff; padding: 12px 24px; display: flex; gap: 16px; align-items: center; }
+    nav a { color: #a0aec0; text-decoration: none; font-size: 14px; }
+    nav a.active, nav a:hover { color: #fff; }
+    nav .logo { color: #63b3ed; font-weight: 700; font-size: 16px; margin-right: 16px; }
+    .page { display: none; padding: 32px 24px; max-width: 960px; }
+    .page.active { display: block; }
+    h1 { font-size: 24px; margin: 0 0 24px; }
+    h2 { font-size: 18px; margin: 24px 0 12px; }
+    .stats { display: flex; gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 20px; flex: 1; }
+    .stat-card-label { font-size: 12px; color: #718096; }
+    .stat-card-value { font-size: 28px; font-weight: 700; color: #2d3748; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+    button { padding: 8px 16px; border-radius: 6px; border: 1px solid #e2e8f0; cursor: pointer; font-size: 14px; background: #fff; }
+    button.primary { background: #3182ce; color: #fff; border-color: #3182ce; }
+    button.danger { background: #fff5f5; color: #e53e3e; border-color: #feb2b2; }
+    .date-range { display: flex; gap: 8px; align-items: center; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+    th { font-size: 12px; color: #718096; text-transform: uppercase; letter-spacing: .04em; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+    .badge-paid { background: #f0fff4; color: #276749; }
+    .badge-pending { background: #fffbeb; color: #744210; }
+    .banner { background: #fffbeb; border: 1px solid #d69e2e; border-radius: 6px; padding: 12px 16px; margin-bottom: 16px; color: #744210; font-size: 14px; }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 13px; color: #4a5568; margin-bottom: 6px; }
+    input, select { padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px; width: 100%; box-sizing: border-box; }
+    .danger-zone { border: 1px solid #feb2b2; border-radius: 8px; padding: 20px; margin-top: 24px; }
+    .danger-zone h3 { color: #e53e3e; margin: 0 0 12px; }
+    .instructions { background: #ebf8ff; border: 1px solid #bee3f8; border-radius: 8px; padding: 16px; margin-bottom: 24px; font-size: 13px; line-height: 1.6; color: #2a4a6b; }
+    .instructions code { background: #2d3748; color: #63b3ed; padding: 2px 6px; border-radius: 3px; font-size: 12px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">MyApp</span>
+  <a href="#" data-route="/dashboard" class="active">Dashboard</a>
+  <a href="#" data-route="/billing">Billing</a>
+  <a href="#" data-route="/settings/profile">Profile</a>
+</nav>
+
+<!-- /dashboard -->
+<div class="page active" data-page="/dashboard">
+  <div class="instructions">
+    <strong>PinNote Playground</strong> — Inject PinNote by pasting
+    <code>dist/pinnote.js</code> into the DevTools console, then
+    <strong>Shift+Click</strong> any element to drop a note.
+    Use the floating control panel (bottom-right) to export or load notes.
+  </div>
+
+  <div class="top-bar">
+    <h1>Dashboard</h1>
+    <div class="date-range">
+      <input type="date" id="date-from" value="2026-05-01" style="width:140px">
+      <span>to</span>
+      <input type="date" id="date-to" value="2026-05-19" style="width:140px">
+      <button class="refresh">Refresh</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-card-label">Total Users</div>
+      <div class="stat-card-value">127</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Revenue</div>
+      <div class="stat-card-value">$8,420</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Active Sessions</div>
+      <div class="stat-card-value">43</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Error Rate</div>
+      <div class="stat-card-value">0.4%</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Recent Activity</h2>
+    <table>
+      <thead>
+        <tr><th>User</th><th>Action</th><th>Time</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>alice@example.com</td><td>Login</td><td>2 min ago</td><td><span class="badge badge-paid">OK</span></td></tr>
+        <tr><td>bob@example.com</td><td>Export</td><td>15 min ago</td><td><span class="badge badge-pending">Pending</span></td></tr>
+        <tr><td>carol@example.com</td><td>Delete</td><td>1 hr ago</td><td><span class="badge badge-paid">OK</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- /billing -->
+<div class="page" data-page="/billing">
+  <h1>Billing</h1>
+
+  <div class="banner">
+    We are migrating our billing system to a new provider. Some features may be temporarily unavailable.
+  </div>
+
+  <div class="card">
+    <div class="invoice-table">
+      <table>
+        <thead>
+          <tr><th>Invoice</th><th>Date</th><th>Amount</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr><td>INV-0042</td><td>2026-05-01</td><td>$299.00</td><td><span class="badge badge-paid">Paid</span></td><td><button>View</button></td></tr>
+          <tr><td>INV-0041</td><td>2026-04-01</td><td>$299.00</td><td><span class="badge badge-paid">Paid</span></td><td><button>View</button></td></tr>
+          <tr><td>INV-0040</td><td>2026-03-01</td><td>$149.00</td><td><span class="badge badge-pending">Pending</span></td><td><button>View</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Payment Method</h2>
+    <p style="font-size:14px;color:#4a5568">Visa ending in 4242 · Expires 08/27</p>
+    <button>Update card</button>
+    <button>Remove card</button>
+  </div>
+</div>
+
+<!-- /settings/profile -->
+<div class="page" data-page="/settings/profile">
+  <h1>Profile Settings</h1>
+
+  <div class="card">
+    <h2>Personal Information</h2>
+    <div class="form-group">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" value="Alice Example">
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" value="alice@example.com">
+    </div>
+    <div class="form-group">
+      <label for="role">Role</label>
+      <select id="role">
+        <option>Admin</option>
+        <option>Editor</option>
+        <option>Viewer</option>
+      </select>
+    </div>
+    <button class="primary">Save changes</button>
+  </div>
+
+  <div class="danger-zone">
+    <h3>Danger Zone</h3>
+    <p style="font-size:14px;color:#718096;margin:0 0 12px">Irreversible actions. Proceed with caution.</p>
+    <button class="danger danger-delete">Delete account</button>
+  </div>
+</div>
+
+<script>
+  // Simple SPA router for playground
+  const links = document.querySelectorAll('nav a[data-route]');
+  const pages = document.querySelectorAll('.page[data-page]');
+
+  function navigate(route) {
+    history.pushState({}, '', route);
+    links.forEach(a => a.classList.toggle('active', a.dataset.route === route));
+    pages.forEach(p => p.classList.toggle('active', p.dataset.page === route));
+  }
+
+  links.forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      navigate(a.dataset.route);
+    });
+  });
+
+  window.addEventListener('popstate', () => {
+    const route = location.pathname;
+    links.forEach(a => a.classList.toggle('active', a.dataset.route === route));
+    pages.forEach(p => p.classList.toggle('active', p.dataset.page === route));
+  });
+</script>
+</body>
+</html>
