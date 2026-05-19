@@ -505,6 +505,51 @@ function buildControl() {
   ctl.appendChild(loadBtn);
   ctl.appendChild(wipeBtn);
 
+  // Restore saved position
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('pinnote:ctl-pos') || 'null');
+    if (saved) {
+      ctl.style.left = saved.left;
+      ctl.style.top = saved.top;
+      ctl.style.right = 'auto';
+      ctl.style.bottom = 'auto';
+    }
+  } catch {}
+
+  // Drag to reposition
+  let dragOffset = null;
+  ctl.addEventListener('mousedown', (e) => {
+    if (e.target.closest('button')) return;
+    e.preventDefault();
+    const rect = ctl.getBoundingClientRect();
+    dragOffset = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    ctl.classList.add('pn-ctl-dragging');
+    document.addEventListener('mousemove', onDragMove, true);
+    document.addEventListener('mouseup', onDragEnd, true);
+  });
+
+  function onDragMove(e) {
+    if (!dragOffset) return;
+    const x = Math.max(0, Math.min(e.clientX - dragOffset.x, window.innerWidth - ctl.offsetWidth));
+    const y = Math.max(0, Math.min(e.clientY - dragOffset.y, window.innerHeight - ctl.offsetHeight));
+    ctl.style.left = x + 'px';
+    ctl.style.top = y + 'px';
+    ctl.style.right = 'auto';
+    ctl.style.bottom = 'auto';
+  }
+
+  function onDragEnd() {
+    document.removeEventListener('mousemove', onDragMove, true);
+    document.removeEventListener('mouseup', onDragEnd, true);
+    ctl.classList.remove('pn-ctl-dragging');
+    try {
+      sessionStorage.setItem('pinnote:ctl-pos', JSON.stringify({
+        left: ctl.style.left, top: ctl.style.top,
+      }));
+    } catch {}
+    dragOffset = null;
+  }
+
   return ctl;
 }
 
