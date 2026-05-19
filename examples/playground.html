@@ -52,10 +52,10 @@
 <!-- /dashboard -->
 <div class="page active" data-page="/dashboard">
   <div class="instructions">
-    <strong>PinNote Playground</strong> — Inject PinNote by pasting
-    <code>dist/pinnote.js</code> into the DevTools console, then
+    <strong>PinNote Playground</strong> — PinNote is pre-loaded on this page.
     <strong>Shift+Click</strong> any element to drop a note.
     Use the floating control panel (bottom-right) to export or load notes.
+    To test re-injection, paste the contents of <code>dist/pinnote.js</code> into the DevTools console.
   </div>
 
   <div class="top-bar">
@@ -165,6 +165,7 @@
   </div>
 </div>
 
+<script src="../dist/pinnote.js"></script>
 <script>
   // Simple SPA router for playground
   const links = document.querySelectorAll('nav a[data-route]');
