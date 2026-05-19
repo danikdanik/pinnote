@@ -4,6 +4,7 @@ import { TAGS, isMac, clearHighlight as captureClearHighlight } from './capture.
 const ATTR = 'data-pinnote-anno';
 const Z = '2147483647';
 const MOD = isMac ? '⌘' : 'Ctrl+';
+const ALT = isMac ? '⌥' : 'Alt+';
 
 const TAG_COLORS = {
   bug: '#e53e3e', change: '#dd6b20', remove: '#718096',
@@ -14,11 +15,11 @@ const STATUS_COLORS = {
 };
 
 const TAG_LABELS = [
-  ['bug',       'bug (Alt+1)'],
-  ['change',    'change (Alt+2)'],
-  ['remove',    'remove (Alt+3)'],
-  ['unclear',   'unclear (Alt+4)'],
-  ['redundant', 'redundant (Alt+5)'],
+  ['bug',       `bug (${ALT}1)`],
+  ['change',    `change (${ALT}2)`],
+  ['remove',    `remove (${ALT}3)`],
+  ['unclear',   `unclear (${ALT}4)`],
+  ['redundant', `redundant (${ALT}5)`],
 ];
 
 // ── Module state ───────────────────────────────────────────────
@@ -159,7 +160,7 @@ export function openNewNotePopover(anchor, position, targetEl) {
   pop.appendChild(ta);
 
   const hint = el('div', { class: 'pn-pop-hint' });
-  hint.textContent = `Alt+1–5 to change tag  ·  Enter to save  ·  Shift+Enter newline  ·  Esc to cancel`;
+  hint.textContent = `${ALT}1–5 to change tag  ·  Enter to save  ·  Shift+Enter newline  ·  Esc to cancel`;
   pop.appendChild(hint);
 
   const actions = el('div', { class: 'pn-pop-actions' });
@@ -304,7 +305,7 @@ function openEditPopover(origNote) {
   pop.appendChild(ta);
 
   const hint = el('div', { class: 'pn-pop-hint' });
-  hint.textContent = `Alt+1–5 to change tag  ·  Enter to save  ·  Shift+Enter newline  ·  Esc to cancel`;
+  hint.textContent = `${ALT}1–5 to change tag  ·  Enter to save  ·  Shift+Enter newline  ·  Esc to cancel`;
   pop.appendChild(hint);
 
   const actions = el('div', { class: 'pn-pop-actions' });
