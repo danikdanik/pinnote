@@ -308,7 +308,9 @@ export const STYLES = `
   pointer-events: auto;
   box-shadow: 0 4px 16px rgba(0,0,0,.3);
   user-select: none;
+  cursor: move;
 }
+.pn-ctl-dragging { cursor: grabbing !important; }
 
 .pn-ctl-logo {
   font-size: 11px; font-weight: 800;
