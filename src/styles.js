@@ -39,11 +39,10 @@ export const STYLES = `
   pointer-events: none;
 }
 
-.pn-pin[data-tag="bug"]       { background: #e53e3e; }
-.pn-pin[data-tag="change"]    { background: #dd6b20; }
-.pn-pin[data-tag="remove"]    { background: #718096; }
-.pn-pin[data-tag="unclear"]   { background: #3182ce; }
-.pn-pin[data-tag="redundant"] { background: #805ad5; }
+.pn-pin[data-tag="change"]  { background: #dd6b20; }
+.pn-pin[data-tag="remove"]  { background: #718096; }
+.pn-pin[data-tag="add"]     { background: #38a169; }
+.pn-pin[data-tag="unclear"] { background: #3182ce; }
 
 .pn-pin[data-status="applied"]             { background: #38a169; }
 .pn-pin[data-status="skipped"]             { background: #a0aec0; }
@@ -275,6 +274,12 @@ export const STYLES = `
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
+}
+
+.pn-sb-foot-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
 .pn-btn-link {

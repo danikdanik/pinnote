@@ -7,19 +7,18 @@ const MOD = isMac ? '⌘' : 'Ctrl+';
 const ALT = isMac ? '⌥' : 'Alt+';
 
 const TAG_COLORS = {
-  bug: '#e53e3e', change: '#dd6b20', remove: '#718096',
-  unclear: '#3182ce', redundant: '#805ad5',
+  change: '#dd6b20', remove: '#718096',
+  add: '#38a169', unclear: '#3182ce',
 };
 const STATUS_COLORS = {
   applied: '#38a169', skipped: '#a0aec0', 'needs-clarification': '#d69e2e',
 };
 
 const TAG_LABELS = [
-  ['bug',       `bug (${ALT}1)`],
-  ['change',    `change (${ALT}2)`],
-  ['remove',    `remove (${ALT}3)`],
-  ['unclear',   `unclear (${ALT}4)`],
-  ['redundant', `redundant (${ALT}5)`],
+  ['change',  `change (${ALT}1)`],
+  ['remove',  `remove (${ALT}2)`],
+  ['add',     `add (${ALT}3)`],
+  ['unclear', `unclear (${ALT}4)`],
 ];
 
 // ── Module state ───────────────────────────────────────────────
@@ -147,7 +146,7 @@ export function openNewNotePopover(anchor, position, targetEl) {
   for (const [val, label] of TAG_LABELS) {
     const opt = el('option', { value: val });
     opt.textContent = label;
-    if (val === 'unclear') opt.selected = true;
+    if (val === currentTag) opt.selected = true;
     tagSel.appendChild(opt);
   }
   tagSel.addEventListener('change', () => { currentTag = tagSel.value; });
@@ -382,6 +381,8 @@ function buildSidebar() {
   sidebar.appendChild(list);
 
   const foot = el('div', { class: 'pn-sb-foot' });
+
+  const footLeft = el('div', { class: 'pn-sb-foot-left' });
   const clearRouteBtn = el('button', { class: 'pn-btn-link pn-btn-link-danger', [ATTR]: '1' });
   clearRouteBtn.textContent = 'Clear all on this route';
   clearRouteBtn.addEventListener('click', () => {
@@ -389,6 +390,17 @@ function buildSidebar() {
       if (cbs.onClearRoute) cbs.onClearRoute(currentRoute);
     }
   });
+
+  const wipeAllBtn = el('button', { class: 'pn-btn-link pn-btn-link-muted', [ATTR]: '1' });
+  wipeAllBtn.textContent = 'Wipe all notes';
+  wipeAllBtn.addEventListener('click', () => {
+    if (confirm('Delete ALL PinNote notes? This cannot be undone.')) {
+      if (cbs.onWipeAll) cbs.onWipeAll();
+    }
+  });
+
+  footLeft.appendChild(clearRouteBtn);
+  footLeft.appendChild(wipeAllBtn);
 
   const showAllLabel = el('label', { class: 'pn-show-all-label' });
   const showAllCb = el('input', { type: 'checkbox', [ATTR]: '1' });
@@ -400,7 +412,7 @@ function buildSidebar() {
   showAllLabel.appendChild(showAllCb);
   showAllLabel.appendChild(document.createTextNode(' Show all'));
 
-  foot.appendChild(clearRouteBtn);
+  foot.appendChild(footLeft);
   foot.appendChild(showAllLabel);
   sidebar.appendChild(foot);
 
@@ -487,15 +499,6 @@ function buildControl() {
   loadBtn.textContent = 'Load';
   loadBtn.addEventListener('click', () => { if (fileInput) fileInput.click(); });
 
-  const wipeBtn = el('button', { class: 'pn-ctl-btn', [ATTR]: '1' });
-  wipeBtn.textContent = '⋯';
-  wipeBtn.title = 'Wipe all notes';
-  wipeBtn.addEventListener('click', () => {
-    if (confirm('Delete ALL PinNote notes? This cannot be undone.')) {
-      if (cbs.onWipeAll) cbs.onWipeAll();
-    }
-  });
-
   ctl.appendChild(logo);
   ctl.appendChild(sep1);
   ctl.appendChild(count);
@@ -503,7 +506,6 @@ function buildControl() {
   ctl.appendChild(notesBtn);
   ctl.appendChild(exportBtn);
   ctl.appendChild(loadBtn);
-  ctl.appendChild(wipeBtn);
 
   // Restore saved position
   try {
