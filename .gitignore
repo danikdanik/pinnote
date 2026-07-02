@@ -1,6 +1,8 @@
 node_modules/
 dist/*
 !dist/.gitkeep
+extension/pinnote.js
+extension/errors.js
 .DS_Store
 *.log
 .env
