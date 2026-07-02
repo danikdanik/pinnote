@@ -25,19 +25,17 @@ async function buildMain() {
 }
 
 async function buildExtension() {
-  mkdirSync("extension/dist", { recursive: true });
-
   await build({
     entryPoints: ["src/errors.js"],
     bundle: true,
     format: "iife",
-    outfile: "extension/dist/errors.js",
+    outfile: "extension/errors.js",
     target: ["chrome100"],
     legalComments: "inline",
     banner: { js: MAIN_BANNER },
   });
 
-  copyFileSync("dist/pinnote.js", "extension/dist/pinnote.js");
+  copyFileSync("dist/pinnote.js", "extension/pinnote.js");
 }
 
 if (watch) {
@@ -46,5 +44,5 @@ if (watch) {
 } else {
   await buildMain();
   await buildExtension();
-  console.log("built dist/pinnote.js and extension/dist/");
+  console.log("built dist/pinnote.js and extension/pinnote.js + extension/errors.js");
 }

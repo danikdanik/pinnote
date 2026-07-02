@@ -56,14 +56,14 @@ Toolbar icon toggle, notes persist across page refreshes, automatic error captur
 npm install && npm run build
 ```
 
-Produces `dist/pinnote.js` (for the snippet method) and `extension/dist/` (extension files).
+Produces `dist/pinnote.js` (for the snippet method) and `extension/pinnote.js` + `extension/errors.js` (for the extension).
 
 ### Install
 
 1. Open `chrome://extensions`
 2. Enable **Developer mode** (top-right)
 3. Click **Load unpacked** and select the `extension/` folder
-4. PinNote should appear in your toolbar (you may need to pin it via the extensions menu)
+4. Click the puzzle-piece extensions menu in the toolbar, find PinNote, and click the pin icon so it stays visible
 5. The extension will warn about "Read and change all your data" -- that is required because PinNote must work on any page you're reviewing. No data is sent anywhere.
 
 ### Usage

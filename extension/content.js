@@ -1,6 +1,6 @@
 var running = false;
 
-injectScriptTag(chrome.runtime.getURL('dist/errors.js'));
+injectScriptTag(chrome.runtime.getURL('errors.js'));
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (message.action === 'start') {
@@ -9,7 +9,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       return;
     }
     var script = document.createElement('script');
-    script.src = chrome.runtime.getURL('dist/pinnote.js');
+    script.src = chrome.runtime.getURL('pinnote.js');
     script.onload = function() {
       running = true;
     };

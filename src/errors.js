@@ -22,10 +22,62 @@ function saveNotes(notes) {
   try {
     localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
   } catch (e) {
-    console.warn('[PinNote] Error capture failed to persist:', e);
+    if (origConsole.warn) origConsole.warn('[PinNote] Error capture failed to persist:', e);
   }
 }
 
+const origConsole = {};
+const CONSOLE_METHODS = ['warn', 'error'];
+
+for (const method of CONSOLE_METHODS) {
+  origConsole[method] = console[method].bind(console);
+  console[method] = function(...args) {
+    captureConsole(method, args);
+    origConsole[method](...args);
+  };
+}
+
+function formatArgs(args) {
+  return args.map(function(a) {
+    try {
+      if (typeof a === 'string') return a;
+      if (a instanceof Error) return a.stack || a.message;
+      return JSON.stringify(a);
+    } catch (_) {
+      return String(a);
+    }
+  }).join(' ');
+}
+
+function captureConsole(level, args) {
+  var message = formatArgs(args);
+  var fp = 'console:' + level + ':' + message.slice(0, 200);
+  if (seen.has(fp)) return;
+  seen.add(fp);
+
+  var notes = loadNotes();
+  var max = findMaxErrorNumber(notes);
+  var num = max + 1;
+
+  var body = '[console.' + level + '] ' + message + '\nURL: ' + window.location.href;
+  addNote(notes, num, body);
+  saveNotes(notes);
+}
+
+function addNote(notes, num, body) {
+  notes.push({
+    id: 'error-' + String(num).padStart(3, '0'),
+    number: num,
+    tag: 'error',
+    status: 'open',
+    route: route(),
+    anchor: { selector: '', text: '' },
+    anchor_confidence: 'position-only',
+    position: { x: 0, y: 0 },
+    created: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
+    note: body,
+  });
+}
 function findMaxErrorNumber(notes) {
   let max = 0;
   for (const n of notes) {
@@ -57,20 +109,7 @@ function captureError(message, errorObj, source, lineno, colno) {
   }
   body += '\nURL: ' + window.location.href;
 
-  const errorNote = {
-    id: 'error-' + String(num).padStart(3, '0'),
-    number: num,
-    tag: 'error',
-    status: 'open',
-    route: route(),
-    anchor: { selector: '', text: '' },
-    anchor_confidence: 'position-only',
-    position: { x: 0, y: 0 },
-    created: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
-    note: body,
-  };
-
-  notes.push(errorNote);
+  addNote(notes, num, body);
   saveNotes(notes);
 }
 

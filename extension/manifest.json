@@ -30,7 +30,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["dist/pinnote.js", "dist/errors.js"],
+      "resources": ["pinnote.js", "errors.js"],
       "matches": ["<all_urls>"]
     }
   ]
