@@ -1,6 +1,8 @@
 node_modules/
 dist/*
 !dist/.gitkeep
+extension/dist/*
+!extension/dist/.gitkeep
 .DS_Store
 *.log
 .env
