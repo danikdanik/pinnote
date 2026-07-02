@@ -1,24 +1,50 @@
 import { build, context } from "esbuild";
+import { copyFileSync, mkdirSync } from "fs";
 
 const watch = process.argv.includes("--watch");
 
-const options = {
-  entryPoints: ["src/index.js"],
-  bundle: true,
-  format: "iife",
-  outfile: "dist/pinnote.js",
-  target: ["chrome100", "edge100", "firefox100", "safari16"],
-  legalComments: "inline",
-  banner: {
-    js: "/* PinNote — https://github.com/pinnote/pinnote — MIT */",
-  },
-};
+const MAIN_BANNER = "/* PinNote — https://github.com/pinnote/pinnote — MIT */";
+
+async function buildMain() {
+  const options = {
+    entryPoints: ["src/index.js"],
+    bundle: true,
+    format: "iife",
+    outfile: "dist/pinnote.js",
+    target: ["chrome100", "edge100", "firefox100", "safari16"],
+    legalComments: "inline",
+    banner: { js: MAIN_BANNER },
+  };
+
+  if (watch) {
+    const ctx = await context(options);
+    await ctx.watch();
+  } else {
+    await build(options);
+  }
+}
+
+async function buildExtension() {
+  mkdirSync("extension/dist", { recursive: true });
+
+  await build({
+    entryPoints: ["src/errors.js"],
+    bundle: true,
+    format: "iife",
+    outfile: "extension/dist/errors.js",
+    target: ["chrome100"],
+    legalComments: "inline",
+    banner: { js: MAIN_BANNER },
+  });
+
+  copyFileSync("dist/pinnote.js", "extension/dist/pinnote.js");
+}
 
 if (watch) {
-  const ctx = await context(options);
-  await ctx.watch();
+  await buildMain();
   console.log("watching src/ for changes…");
 } else {
-  await build(options);
-  console.log("built dist/pinnote.js");
+  await buildMain();
+  await buildExtension();
+  console.log("built dist/pinnote.js and extension/dist/");
 }
