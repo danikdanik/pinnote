@@ -24,6 +24,8 @@ const TAG_LABELS = [
 // ── Module state ───────────────────────────────────────────────
 
 let root = null;
+let pinnoteHost = null;
+let shadow = null;
 let sidebarEl = null;
 let controlEl = null;
 let popoverEl = null;
@@ -69,7 +71,9 @@ export function destroy() {
   cancelShowPopover();
   cancelHidePopover();
   pinMap.clear();
-  if (root) { root.remove(); root = null; }
+  if (pinnoteHost) { pinnoteHost.remove(); pinnoteHost = null; }
+  root = null;
+  shadow = null;
   const styleEl = document.getElementById('pn-styles');
   if (styleEl) styleEl.remove();
   sidebarEl = null; controlEl = null; popoverEl = null; fileInput = null;
@@ -163,16 +167,16 @@ export function openNewNotePopover(anchor, position, targetEl) {
   pop.appendChild(hint);
 
   const actions = el('div', { class: 'pn-pop-actions' });
-  const cancelBtn = el('button', { class: 'pn-btn pn-btn-secondary', [ATTR]: '1' });
-  cancelBtn.textContent = 'Cancel';
-  cancelBtn.addEventListener('click', closePopover);
-
   const saveBtn = el('button', { class: 'pn-btn pn-btn-primary', [ATTR]: '1' });
   saveBtn.textContent = 'Save';
   saveBtn.addEventListener('click', save);
 
-  actions.appendChild(cancelBtn);
+  const cancelBtn = el('button', { class: 'pn-btn pn-btn-secondary', [ATTR]: '1' });
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.addEventListener('click', closePopover);
+
   actions.appendChild(saveBtn);
+  actions.appendChild(cancelBtn);
   pop.appendChild(actions);
 
   function save() {
@@ -198,6 +202,7 @@ export function openNewNotePopover(anchor, position, targetEl) {
     }
   });
 
+  makeDraggable(pop, row);
   positionPopover(pop, position);
   root.appendChild(pop);
   popoverEl = pop;
@@ -272,6 +277,7 @@ export function openReadPopover(note) {
   pop.addEventListener('mouseenter', cancelHidePopover);
   pop.addEventListener('mouseleave', scheduleHidePopover);
 
+  makeDraggable(pop, row);
   positionPopover(pop, pos);
   root.appendChild(pop);
   popoverEl = pop;
@@ -308,13 +314,13 @@ function openEditPopover(origNote) {
   pop.appendChild(hint);
 
   const actions = el('div', { class: 'pn-pop-actions' });
-  const cancelBtn = el('button', { class: 'pn-btn pn-btn-secondary', [ATTR]: '1' });
-  cancelBtn.textContent = 'Cancel';
-  cancelBtn.addEventListener('click', closePopover);
-
   const saveBtn = el('button', { class: 'pn-btn pn-btn-primary', [ATTR]: '1' });
   saveBtn.textContent = 'Save';
   saveBtn.addEventListener('click', save);
+
+  const cancelBtn = el('button', { class: 'pn-btn pn-btn-secondary', [ATTR]: '1' });
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.addEventListener('click', closePopover);
 
   function save() {
     const text = ta.value.trim();
@@ -337,10 +343,11 @@ function openEditPopover(origNote) {
     }
   });
 
-  actions.appendChild(cancelBtn);
   actions.appendChild(saveBtn);
+  actions.appendChild(cancelBtn);
   pop.appendChild(actions);
 
+  makeDraggable(pop, row);
   positionPopover(pop, pos);
   root.appendChild(pop);
   popoverEl = pop;
@@ -556,7 +563,8 @@ function buildControl() {
 }
 
 function refreshCount(notes) {
-  const el = document.getElementById('pn-ctl-count');
+  const container = shadow || document;
+  const el = container.getElementById('pn-ctl-count');
   if (el) el.textContent = String(notes.length);
 }
 
@@ -729,6 +737,37 @@ function positionPopover(pop, pos) {
   pop.style.top  = y + 'px';
 }
 
+function makeDraggable(pop, handle) {
+  let dragOffset = null;
+
+  handle.addEventListener('mousedown', (e) => {
+    if (e.target.closest('button, select, textarea, input')) return;
+    e.preventDefault();
+    const rect = pop.getBoundingClientRect();
+    dragOffset = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    pop.classList.add('pn-pop-dragging');
+    document.addEventListener('mousemove', onDragMove, true);
+    document.addEventListener('mouseup', onDragEnd, true);
+  });
+
+  function onDragMove(e) {
+    if (!dragOffset) return;
+    const x = Math.max(0, Math.min(e.clientX - dragOffset.x, window.innerWidth - pop.offsetWidth));
+    const y = Math.max(0, Math.min(e.clientY - dragOffset.y, window.innerHeight - pop.offsetHeight));
+    pop.style.left = x + 'px';
+    pop.style.top = y + 'px';
+    pop.style.right = 'auto';
+    pop.style.bottom = 'auto';
+  }
+
+  function onDragEnd() {
+    document.removeEventListener('mousemove', onDragMove, true);
+    document.removeEventListener('mouseup', onDragEnd, true);
+    pop.classList.remove('pn-pop-dragging');
+    dragOffset = null;
+  }
+}
+
 function getPinViewportPos(note) {
   const entry = pinMap.get(note.id);
   if (entry) {
@@ -766,20 +805,49 @@ function injectStyles() {
   const styleEl = document.createElement('style');
   styleEl.id = 'pn-styles';
   styleEl.setAttribute(ATTR, '1');
-  styleEl.textContent = STYLES;
+  styleEl.textContent = `
+    #pinnote-root {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: ${Z};
+    }
+    .pn-el-hl {
+      outline: 2px dashed #3182ce !important;
+      outline-offset: 2px !important;
+    }
+  `;
   document.head.appendChild(styleEl);
 }
 
 function createRoot() {
-  const div = document.createElement('div');
-  div.id = 'pinnote-root';
-  div.setAttribute(ATTR, '1');
-  document.body.appendChild(div);
-  root = div;
+  const host = document.createElement('div');
+  host.id = 'pinnote-root';
+  host.setAttribute(ATTR, '1');
+  document.body.appendChild(host);
+  pinnoteHost = host;
+
+  shadow = host.attachShadow({ mode: 'open' });
+
+  const wrapper = document.createElement('div');
+  wrapper.style.width = '100%';
+  wrapper.style.height = '100%';
+  wrapper.style.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+  wrapper.style.fontSize = "13px";
+  wrapper.style.lineHeight = "1.4";
+  shadow.appendChild(wrapper);
+
+  const shadowStyle = document.createElement('style');
+  shadowStyle.textContent = STYLES;
+  shadow.appendChild(shadowStyle);
+
+  root = wrapper;
 
   // Click outside popover closes it
   document.addEventListener('click', (e) => {
-    if (popoverEl && !popoverEl.contains(e.target)) {
+    const path = e.composedPath();
+    if (popoverEl && !path.includes(popoverEl)) {
       closePopover();
     }
   });

@@ -76,7 +76,10 @@ export const STYLES = `
   align-items: center;
   gap: 6px;
   margin-bottom: 8px;
+  cursor: grab;
+  user-select: none;
 }
+.pn-pop-dragging { cursor: grabbing !important; }
 
 .pn-pop-num {
   font-size: 11px;

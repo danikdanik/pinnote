@@ -38,7 +38,13 @@ export { TAGS, isMac };
 
 function isPinNoteEl(el) {
   if (!el || typeof el.closest !== 'function') return false;
-  return el.closest(`[${PINNOTE_ATTR}]`) !== null;
+  if (el.closest(`[${PINNOTE_ATTR}]`) !== null) return true;
+  const rootNode = el.getRootNode();
+  if (rootNode instanceof ShadowRoot) {
+    const host = rootNode.host;
+    if (host && host.hasAttribute(PINNOTE_ATTR)) return true;
+  }
+  return false;
 }
 
 function highlightEl(el) {
