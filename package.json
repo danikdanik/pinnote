@@ -9,7 +9,7 @@
     "clean": "rm -rf dist/*",
     "demo:record": "npm run build && python3 docs/demo/record.py"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "keywords": [
     "annotation",
     "ux-review",

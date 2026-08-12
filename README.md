@@ -8,6 +8,15 @@ Shift+Click any element to pin a note to it. When you're done, export a `notes.m
 
 The GIF shows the full round-trip: annotate two elements, export `notes.md`, an agent writes back statuses, then Load to see pins turn green (applied) and yellow (needs-clarification).
 
+## Why PinNote
+
+- **The export is a two-way artifact.** Most annotation tools are one-way: you leave notes, a human reads them. PinNote's `notes.md` goes to an AI agent, the agent writes status and responses back into the same file, and you load it to see what happened. The file is the conversation.
+- **The file ships its own instructions.** A meta-prompt embedded in the frontmatter tells any compliant agent exactly how to process the notes — tag semantics, status transitions, the "ask, don't guess" rule. You don't have to explain the format.
+- **Anchors are agent-consumable.** Each note carries a CSS selector, text snippet, and viewport coordinates with a confidence level. An agent can locate the element in the codebase, not just look at a screenshot.
+- **No backend, no account, no data leaves your browser.** Storage is localStorage or a user-granted folder via the File System Access API. Nothing is uploaded anywhere.
+- **Zero-install option.** The DevTools snippet works on any browser, any page (including `chrome://`), no extension install. Lower friction than any hosted tool.
+- **Human-in-the-loop by design.** The agent can't delete your notes or guess your intent. If something is unclear, it sets `needs-clarification` and asks. You stay in control.
+
 ## Delivery methods
 
 PinNote ships two ways: as a **DevTools snippet** (works everywhere, no install) and as a **Chrome extension** (toolbar toggle, persistent across refreshes, error capture).
