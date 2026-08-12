@@ -1,6 +1,6 @@
 # Python dependencies for docs/demo/record.py
 # Install: pip install -r docs/demo/requirements.txt
-playwright>=1.40
+playwright>=1.49,<1.60
 
 # System dependency (not pip-installable):
 #   macOS:   brew install ffmpeg
