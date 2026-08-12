@@ -6,3 +6,7 @@ extension/errors.js
 .DS_Store
 *.log
 .env
+# Demo recording intermediates (the GIF is committed; these are not)
+docs/demo/*.webm
+docs/demo/notes.md
+docs/demo/notes-agent.md

@@ -6,7 +6,8 @@
   "scripts": {
     "build": "node build.mjs",
     "dev": "node build.mjs --watch",
-    "clean": "rm -rf dist/*"
+    "clean": "rm -rf dist/*",
+    "demo:record": "npm run build && python3 docs/demo/record.py"
   },
   "license": "UNLICENSED",
   "keywords": [

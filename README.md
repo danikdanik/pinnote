@@ -4,6 +4,10 @@ Drop notes on any live web page, then hand them to an AI agent to act on.
 
 Shift+Click any element to pin a note to it. When you're done, export a `notes.md` file. Give that file to your AI coding agent. It reads the notes, applies changes, and writes status back. Load the updated file to see what was done.
 
+![PinNote demo: Shift+Click to pin a note, save, export, then Load the agent's response to see status colors](docs/demo/pinnote-demo.gif)
+
+The GIF shows the full round-trip: annotate two elements, export `notes.md`, an agent writes back statuses, then Load to see pins turn green (applied) and yellow (needs-clarification).
+
 ## Delivery methods
 
 PinNote ships two ways: as a **DevTools snippet** (works everywhere, no install) and as a **Chrome extension** (toolbar toggle, persistent across refreshes, error capture).

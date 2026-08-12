@@ -1,0 +1,8 @@
+# Python dependencies for docs/demo/record.py
+# Install: pip install -r docs/demo/requirements.txt
+playwright>=1.40
+
+# System dependency (not pip-installable):
+#   macOS:   brew install ffmpeg
+#   Debian:  apt install ffmpeg
+# record.py calls ffmpeg via subprocess to convert webm -> gif.

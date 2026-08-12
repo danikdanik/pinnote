@@ -159,7 +159,7 @@ export function openNewNotePopover(anchor, position, targetEl) {
   row.appendChild(tagSel);
   pop.appendChild(row);
 
-  const ta = el('textarea', { class: 'pn-note-ta', placeholder: 'Describe the issue… (Enter to save, Esc to cancel)', rows: '3', [ATTR]: '1' });
+  const ta = el('textarea', { class: 'pn-note-ta', placeholder: 'Describe the issue… (Enter to save, Esc to cancel)', rows: '3', [ATTR]: '1', 'data-pinnote-note-ta': 'new' });
   pop.appendChild(ta);
 
   const hint = el('div', { class: 'pn-pop-hint' });
@@ -305,7 +305,7 @@ function openEditPopover(origNote) {
   row.appendChild(tagSel);
   pop.appendChild(row);
 
-  const ta = el('textarea', { class: 'pn-note-ta', rows: '3', [ATTR]: '1' });
+  const ta = el('textarea', { class: 'pn-note-ta', rows: '3', [ATTR]: '1', 'data-pinnote-note-ta': 'edit' });
   ta.value = origNote.note;
   pop.appendChild(ta);
 
@@ -384,7 +384,7 @@ function buildSidebar() {
   const routeBar = el('div', { class: 'pn-sb-route', id: 'pn-sb-route' });
   sidebar.appendChild(routeBar);
 
-  const list = el('div', { class: 'pn-sb-list', id: 'pn-sb-list' });
+  const list = el('div', { class: 'pn-sb-list', id: 'pn-sb-list', [ATTR]: '1', 'data-pinnote-sidebar-list': '1' });
   sidebar.appendChild(list);
 
   const foot = el('div', { class: 'pn-sb-foot' });
@@ -494,15 +494,15 @@ function buildControl() {
 
   const sep2 = el('span', { class: 'pn-ctl-sep' });
 
-  const notesBtn = el('button', { class: 'pn-ctl-btn', [ATTR]: '1' });
+  const notesBtn = el('button', { class: 'pn-ctl-btn', [ATTR]: '1', 'data-pinnote-ctl': 'notes' });
   notesBtn.textContent = 'Notes';
   notesBtn.addEventListener('click', toggleSidebar);
 
-  const exportBtn = el('button', { class: 'pn-ctl-btn', [ATTR]: '1' });
+  const exportBtn = el('button', { class: 'pn-ctl-btn', [ATTR]: '1', 'data-pinnote-ctl': 'export' });
   exportBtn.textContent = 'Export';
   exportBtn.addEventListener('click', () => { if (cbs.onExport) cbs.onExport(); });
 
-  const loadBtn = el('button', { class: 'pn-ctl-btn', [ATTR]: '1' });
+  const loadBtn = el('button', { class: 'pn-ctl-btn', [ATTR]: '1', 'data-pinnote-ctl': 'load' });
   loadBtn.textContent = 'Load';
   loadBtn.addEventListener('click', () => { if (fileInput) fileInput.click(); });
 
@@ -588,6 +588,7 @@ function renderPin(note) {
   const pin = el('div', {
     class: 'pn-pin',
     [ATTR]: '1',
+    'data-pinnote-pin': '1',
     'data-note-id': note.id,
     'data-tag': note.tag,
     'data-status': note.status,
