@@ -18,6 +18,9 @@
     "markdown"
   ],
   "devDependencies": {
-    "esbuild": "^0.20.0"
+    "esbuild": "^0.28.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
   }
 }
