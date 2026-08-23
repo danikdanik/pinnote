@@ -9,6 +9,7 @@
     "clean": "rm -rf dist/*",
     "demo:record": "npm run build && python3 docs/demo/record.py"
   },
+  "author": "Dani Kamanovsky <kamanovsky@gmail.com>",
   "license": "MIT",
   "keywords": [
     "annotation",
