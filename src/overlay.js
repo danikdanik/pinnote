@@ -193,12 +193,33 @@ export function showCopyModal(text, label) {
     }
     setTimeout(() => { status.textContent = ''; status.style.color = '#a0aec0'; }, 3000);
   };
+  const dlBtn = document.createElement('button');
+  dlBtn.setAttribute(ATTR, '1');
+  dlBtn.style.cssText = 'background: transparent; color: #bee3f8; border: 1px solid #3182ce; border-radius: 6px; padding: 6px 14px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit;';
+  dlBtn.textContent = 'Download';
+  dlBtn.onclick = () => {
+    const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute(ATTR, '1');
+    a.href = url;
+    const ts = new Date().toISOString().slice(0, 19).replace('T', '-').replace(/:/g, '-');
+    a.download = `pinnotes-${ts}.md`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    status.textContent = 'Downloaded';
+    status.style.color = '#68d391';
+    setTimeout(() => { status.textContent = ''; status.style.color = '#a0aec0'; }, 3000);
+  };
   const closeBtn = document.createElement('button');
   closeBtn.setAttribute(ATTR, '1');
   closeBtn.style.cssText = 'background: transparent; color: #a0aec0; border: none; font-size: 12px; cursor: pointer; font-family: inherit; padding: 6px 10px;';
   closeBtn.textContent = 'Close';
   closeBtn.onclick = closeCopyModal;
   btnRow.appendChild(copyBtn);
+  btnRow.appendChild(dlBtn);
   btnRow.appendChild(status);
   btnRow.appendChild(closeBtn);
   modal.appendChild(title);
