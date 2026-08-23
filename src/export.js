@@ -97,6 +97,18 @@ export function download(notes, metaPrompt) {
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 10000);
+  return md;
+}
+
+// Clipboard fallback for sandboxed iframes that block <a download>.
+// Resolves to true if clipboard write succeeded.
+export async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 export function parseMarkdown(text) {

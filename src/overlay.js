@@ -79,6 +79,8 @@ export function destroy() {
   sidebarEl = null; controlEl = null; popoverEl = null; fileInput = null;
   storageWarnEl = null;
   showAllFilter = false;
+  closeCopyModal();
+  if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
 }
 
 // ── Render pins for current route ─────────────────────────────
@@ -130,6 +132,96 @@ export function showStorageWarning() {
   close.onclick = () => { storageWarnEl.remove(); storageWarnEl = null; };
   storageWarnEl.appendChild(close);
   root && root.appendChild(storageWarnEl);
+}
+
+// Transient toast banner. kind: 'info' | 'warn' | 'ok'
+let toastTimer = null;
+export function toast(message, kind = 'info') {
+  if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+  const existing = root && root.querySelector('.pn-toast');
+  if (existing) existing.remove();
+  const t = el('div', { class: `pn-toast pn-toast-${kind}`, [ATTR]: '1' });
+  t.textContent = message;
+  root && root.appendChild(t);
+  toastTimer = setTimeout(() => { t.remove(); toastTimer = null; }, 4000);
+}
+
+// Modal with selectable text — guaranteed fallback when download + clipboard both fail.
+export function showCopyModal(text, label) {
+  closeCopyModal();
+  const host = document.createElement('div');
+  host.setAttribute(ATTR, '1');
+  host.style.cssText = 'all: initial; position: fixed; inset: 0; z-index: 2147483647;';
+  const backdrop = document.createElement('div');
+  backdrop.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center;';
+  const modal = document.createElement('div');
+  modal.style.cssText = 'background: #1a202c; border: 1px solid #2d3748; border-radius: 10px; padding: 20px; max-width: 640px; width: 90%; box-shadow: 0 12px 32px rgba(0,0,0,0.5); box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;';
+  const title = document.createElement('div');
+  title.style.cssText = 'font-size: 14px; font-weight: 600; color: #e2e8f0; margin-bottom: 6px;';
+  title.textContent = label || 'Copy markdown';
+  const hint = document.createElement('div');
+  hint.style.cssText = 'font-size: 11px; color: #a0aec0; margin-bottom: 12px;';
+  hint.textContent = `Press Copy, or select all (${MOD}A) then copy (${MOD}C). Paste into a .md file.`;
+  const ta = document.createElement('textarea');
+  ta.setAttribute(ATTR, '1');
+  ta.style.cssText = 'width: 100%; height: 320px; background: #0d1117; color: #d4d4d4; border: 1px solid #2d3748; border-radius: 6px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px; line-height: 1.5; padding: 12px; resize: vertical; outline: none; box-sizing: border-box;';
+  ta.value = text;
+  ta.readOnly = true;
+  const btnRow = document.createElement('div');
+  btnRow.style.cssText = 'display: flex; align-items: center; gap: 10px; margin-top: 12px;';
+  const copyBtn = document.createElement('button');
+  copyBtn.setAttribute(ATTR, '1');
+  copyBtn.style.cssText = 'background: #3182ce; color: #fff; border: none; border-radius: 6px; padding: 6px 16px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit;';
+  copyBtn.textContent = 'Copy';
+  const kbd = document.createElement('span');
+  kbd.style.cssText = 'margin-left: 8px; padding: 1px 6px; background: rgba(255,255,255,0.15); border-radius: 3px; font-size: 10px; font-family: ui-monospace, "SF Mono", Menlo, monospace;';
+  kbd.textContent = '\u23ce';
+  copyBtn.appendChild(kbd);
+  const status = document.createElement('span');
+  status.style.cssText = 'font-size: 11px; color: #a0aec0; flex: 1;';
+  copyBtn.onclick = () => {
+    ta.focus();
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    if (ok) {
+      status.textContent = 'Copied';
+      status.style.color = '#68d391';
+    } else {
+      status.textContent = `Copy failed \u2014 use ${MOD}A then ${MOD}C`;
+      status.style.color = '#f6ad55';
+    }
+    setTimeout(() => { status.textContent = ''; status.style.color = '#a0aec0'; }, 3000);
+  };
+  const closeBtn = document.createElement('button');
+  closeBtn.setAttribute(ATTR, '1');
+  closeBtn.style.cssText = 'background: transparent; color: #a0aec0; border: none; font-size: 12px; cursor: pointer; font-family: inherit; padding: 6px 10px;';
+  closeBtn.textContent = 'Close';
+  closeBtn.onclick = closeCopyModal;
+  btnRow.appendChild(copyBtn);
+  btnRow.appendChild(status);
+  btnRow.appendChild(closeBtn);
+  modal.appendChild(title);
+  modal.appendChild(hint);
+  modal.appendChild(ta);
+  modal.appendChild(btnRow);
+  backdrop.appendChild(modal);
+  host.appendChild(backdrop);
+  backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closeCopyModal(); });
+  const onKey = (e) => {
+    if (e.key === 'Escape') { closeCopyModal(); }
+    else if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); copyBtn.click(); }
+  };
+  document.addEventListener('keydown', onKey, true);
+  document.body.appendChild(host);
+  modalHost = host;
+  modalHost._cleanup = () => document.removeEventListener('keydown', onKey, true);
+  setTimeout(() => { ta.focus(); ta.select(); }, 50);
+}
+
+let modalHost = null;
+export function closeCopyModal() {
+  if (modalHost) { if (modalHost._cleanup) modalHost._cleanup(); modalHost.remove(); modalHost = null; }
 }
 
 // ── New-note popover ───────────────────────────────────────────

@@ -363,4 +363,22 @@ export const STYLES = `
 
 /* Load file input (hidden) */
 .pn-file-input { display: none; }
+
+/* Toast banner */
+.pn-toast {
+  position: fixed;
+  bottom: 64px; right: 20px;
+  background: #1a202c;
+  border: 1px solid #2d3748;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 12px; color: #e2e8f0;
+  z-index: 2147483647;
+  pointer-events: auto;
+  max-width: 320px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.pn-toast-ok { border-color: #38a169; color: #c6f6d5; }
+.pn-toast-warn { border-color: #d69e2e; color: #fefcbf; background: #2d2a1a; }
+.pn-toast-info { border-color: #3182ce; color: #bee3f8; }
 `;

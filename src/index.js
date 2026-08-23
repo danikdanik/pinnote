@@ -81,7 +81,22 @@ export function start() {
       overlay.renderRoute(storage.getAll(), currentRoute());
     },
     onExport: () => {
-      exportMod.download(storage.getAll(), storage.getCustomMetaPrompt());
+      const notes = storage.getAll();
+      const inIframe = window !== window.top;
+      if (!inIframe) {
+        exportMod.download(notes, storage.getCustomMetaPrompt());
+        overlay.toast(`Exported ${notes.length} notes.`, 'ok');
+        return;
+      }
+      // In an iframe: download likely blocked. Try clipboard, fall back to modal.
+      const md = exportMod.generateMarkdown(notes, storage.getCustomMetaPrompt());
+      exportMod.copyToClipboard(md).then((ok) => {
+        if (ok) {
+          overlay.toast('Download blocked in sandbox. Markdown copied to clipboard — paste into a .md file.', 'warn');
+        } else {
+          overlay.showCopyModal(md, `Export ${notes.length} notes`);
+        }
+      });
     },
     onLoadFile: (file) => {
       exportMod.loadFile(file).then((notes) => {
