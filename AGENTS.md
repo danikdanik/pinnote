@@ -39,7 +39,6 @@ The export is a two-way artifact: the user authors notes, the agent updates stat
 
 ## Workflow
 
-- Read the decision records in `docs/adr/` before changing core behaviors.
 - See `CONTEXT.md` for the glossary.
 - See `examples/sample-notes.md` for the canonical export format.
 - Run `npm run build` before testing in a browser.
